@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+
+body, button, input {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #F9F9F8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Abril Fatface', cursive;
+  letter-spacing: 3px;
+  font-weight: 100;
+  color: black;
+}
+
+form label, 
+form input {
+    display: block;
+}
+
+form label {
+  margin-left: 15px;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 25px;
+  color: #8C8589;
+  margin-top: 20px;
+}
+
+.label {
+  margin-left: 15px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 25px;
+  color: #8C8589;
+}
+
+form input.rounded {
+  background: #FFFFFF;
+  border: 2px solid #C9C5C2;
+  box-sizing: border-box;
+  border-radius: 50px;
+  height: 50px;
+  width: 100%;
+  margin: 10px 0;
+  padding: 0 15px;
+  color: #948d91;
+  font-weight: 900;
+  font-size: 18px;
+}
+
+span.form-error {
+  font-size: 16px;
+  color: #B23A48;
+  margin-left: 15px;
+  font-weight: 500;
+}
+
+button.primary {
+  background-color: #D80032;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  color: white;
+  border: none;
+  height: 50px;
+  width: 100%;
+  font-weight: 700;
+  font-size: 24px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+button.primary.green {
+  background-color: #007F5F;
+}
+
+/* Scanner */
+/* .scanner-container,
+.scanner-container #interactive.viewport {
+  width: 400px;
+  height: 300px;
+}
+
+.scanner-container #interactive.viewport canvas,
+.scanner-container video {
+  width: 400px;
+  height: 300px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#interactive.viewport canvas.drawingBuffer,
+.scanner-container video.drawingBuffer {
+  width: 400px;
+  height: 300px;
+} */
+
+.scanner-container #interactive.viewport video,
+.scanner-container #interactive.viewport canvas {
+  width: 320px;
+  height: 320px;
+  border-radius:  20px;
+}
+
+.scanner-container #interactive.viewport canvas {
+  position: absolute;
+}

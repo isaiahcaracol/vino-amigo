@@ -1,0 +1,15 @@
+.products-list {
+  padding: 0;
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.barcode-input {
+  width: 80% !important;
+  margin-top: 0 !important;
+}

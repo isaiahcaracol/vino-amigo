@@ -1,0 +1,91 @@
+.search-section {
+  display: flex;
+  align-items: center;
+}
+
+.search-field {
+  flex-grow: 1;
+}
+
+.scan-icon-button {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 32px;
+}
+
+.cart-container {
+  margin-top: 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #c5c5c5;
+}
+
+.cart-container ul {
+  padding: 0;
+}
+
+.cart-details {
+  margin-top: 20px;
+}
+
+.clear-button {
+  position: relative;
+  top: -25px;
+  text-align: right;
+}
+
+.total-price {
+  font-size: 28px;
+  color: #007F5F;
+  margin-top: 10px;
+}
+
+.btn-proceed {
+  margin: 40px 0;
+  background-color: #007F5F !important;
+}
+
+.barcode-view {
+  width: 320px;
+  height: 320px;
+  margin: 0 auto;
+  background: #e7e7e7;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  background-image: url("/public/icons/qr_code_scanner.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.search-icon {
+  background-color: white;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.search-icon img {
+  width: 30px;
+}
+
+.product-modal-wrapper {
+  width: 320px;
+  right: 0;
+}
+
+.product-title-container {
+  text-align: center;
+}
+
+.product-title-container img {
+  width: 150px;
+  border-radius: 20px;
+}
+
+.product-preview-confirm-btn {
+  background-color: #007F5F;
+}

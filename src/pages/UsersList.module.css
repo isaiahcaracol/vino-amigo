@@ -1,0 +1,9 @@
+.content {
+  float: left;
+}
+
+.button {
+  float: right;
+  position: relative;
+  bottom: 10px;
+}
