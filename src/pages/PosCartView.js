@@ -21,15 +21,13 @@ const PosCartView = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [cartTotal, setCartTotal] = useState(0);
-  const [cart, setCart] = useState([]);
   const [currentProduct, setCurrentProduct] = useState(0);
   const {products, hasLoaded} = useSelector(state => state.products);
-  const mainCart = useSelector(state => state.cart.items);
+  const cart = useSelector(state => state.cart.items);
+  const cartTotalPrice = useSelector(state => state.cart.totalPrice);
   const [barcodes , setBarcodes] = useState([]);
   const [barcodeScanActive, setBarcodeScanActive] = useState(false);
   const [productPreviewActive, setProductPreviewActive] = useState(false);
-  const [productPreviewIndex, setProductPreviewIndex] = useState(-1);
 
   const navigateSearchProduct = () => {
     navigate('../product-search', {replace: false});
@@ -51,20 +49,20 @@ const PosCartView = () => {
     setBarcodes(temp_barcodes);
   }, [hasLoaded, products]);
 
-  useEffect(() => {
-    let total = 0;
-    for(const item of cart) {
-      total += (products[item['index']].price * item['quantity']);
-    }
-    setCartTotal(formatPrice(total));
-  }, [cart, cartTotal, products]);
+  // Calculate TOTAL
+  // useEffect(() => {
+  //   let total = 0;
+  //   for(const item of cart) {
+  //     total += (products[item['index']].price * item['quantity']);
+  //   }
+  //   setCartTotal(formatPrice(total));
+  // }, [cart, cartTotal, products]);
 
   const barcodeDetectedHandler = result => {
     document.querySelector('#interactive video').pause();
     setBarcodeScanActive(false);
     let barcode = result.codeResult.code;
     if (barcode in barcodes) {
-      addToCart(barcode);
     } else {
       setBarcodeScanActive(true);
       document.querySelector('#interactive video').play();
@@ -134,7 +132,7 @@ const PosCartView = () => {
    ) : 'No Product Found Yet.';
 
    let cartItems = (
-      mainCart.map((item) => {
+      cart.map((item) => {
         return (
           <ProductItemCounter
             key={item.id}
@@ -156,8 +154,7 @@ const PosCartView = () => {
     <Layout title="POS">
       <div className={styles['barcode-view']} onClick={toggleBarcodeScan}>
         <div className={styles['search-icon']}
-          // onClick={navigateSearchProduct}
-          onClick={manualAddProduct}
+          onClick={navigateSearchProduct}
           >
           <img src='/icons/search.png' alt="search"/>
         </div>
@@ -181,8 +178,11 @@ const PosCartView = () => {
           <SmallButton label="clear" onClick={clearCartHandler} />
         </div>
         <p className={`label ${styles["total-price"]}`}>
-          <b>Php {formatPrice(cartTotal)}</b>
+          <b>Php {formatPrice(cartTotalPrice)}</b>
         </p>
+        <button type="submit" className={`primary ${styles["btn-proceed"]}`} onClick={manualAddProduct}>
+          MANUAL ADD
+        </button>
         <button type="submit" className={`primary ${styles["btn-proceed"]}`}>
           PROCEED
         </button>
