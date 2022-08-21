@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../store/ProductSlice";
-import { addToCart as addToMainCart } from "../store/CartSlice";
+import { updateCart } from "../store/CartSlice";
 
 import styles from './ViewProduct.module.css'; 
 import Layout from "../components/UI/Layout/Layout";
@@ -24,7 +24,7 @@ const ViewProduct = (props) => {
   }, [dispatch, hasLoaded, products, params.productId]);
 
   const addToCart = () => {
-    dispatch(addToMainCart(0));
+    dispatch(updateCart(0));
   }
 
   let productEl = productData !== null

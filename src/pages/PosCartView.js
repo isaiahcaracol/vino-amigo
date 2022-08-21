@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducts } from '../store/ProductSlice';
+import { updateCart, 
+        increaseQuantity,
+        reduceQuantity,
+        clearCart } from '../store/CartSlice';
 import { Modal } from 'rsuite';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,12 +15,17 @@ import SmallButton from '../components/UI/SmallButton/SmallButton';
 import ProductItemCounter from '../components/Products/ProductItemCounter';
 
 const PosCartView = () => {
+  // **TEMPORARY**
+  const [temporaryCartPointer, setTemporaryCartPointer] = useState(0);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [cartTotal, setCartTotal] = useState(0);
   const [cart, setCart] = useState([]);
+  const [currentProduct, setCurrentProduct] = useState(0);
   const {products, hasLoaded} = useSelector(state => state.products);
+  const mainCart = useSelector(state => state.cart.items);
   const [barcodes , setBarcodes] = useState([]);
   const [barcodeScanActive, setBarcodeScanActive] = useState(false);
   const [productPreviewActive, setProductPreviewActive] = useState(false);
@@ -63,33 +72,24 @@ const PosCartView = () => {
   }
 
   const addToCart = (barcode) => {
-    let productsRefSet = barcodes[barcode];
-
-    if (productsRefSet.length === 1) {
-      openProductPreview(productsRefSet[0].index);
-      // if exists on cart
-      if (cart.find(item => item['id'] === productsRefSet[0].id)) {
-        let itemIndex = cart.findIndex(item => item['id'] === productsRefSet[0].id);
-        let itemQuantity = cart[itemIndex].quantity;
-        let tempCart = [...cart];
-        tempCart[itemIndex] = {
-          ...cart[itemIndex], 
-          'quantity': (itemQuantity+1)
-        }
-        setCart(tempCart);
-      } else {
-        setCart([...cart, {
-          ...productsRefSet[0],
-          quantity: 1,
-        }]);
-      }
-    } else {
-      // multiple items
-    }
+    let currentProduct = products.find(el => el.barcode === barcode);
+    dispatch(updateCart({
+      ...currentProduct,
+      quantity: 1
+    }));
+    openProductPreview(currentProduct);
   }
 
-  const clearCart = () => {
-    setCart([]);
+  const addQuantityHandler = (id) => {
+    dispatch(increaseQuantity(id));
+  }
+
+  const reduceQuantityHandler = (id) => {
+    dispatch(reduceQuantity(id));
+  }
+
+  const clearCartHandler = () => {
+    dispatch(clearCart());
   }
 
   const formatPrice = (price) => {
@@ -104,8 +104,8 @@ const PosCartView = () => {
     setProductPreviewActive(false);
   }
 
-  const openProductPreview = (index) => {
-    setProductPreviewIndex(index);
+  const openProductPreview = (currentProduct) => {
+    setCurrentProduct(currentProduct);
     setProductPreviewActive(true);
     setTimeout(() => {
       setProductPreviewActive(false);
@@ -113,51 +113,40 @@ const PosCartView = () => {
     }, 3000);
   }
 
-  const addQuantity = (id) => {
-    let index = cart.findIndex(el => el['id'] === id);
-    let temp_cart = [...cart];
-    temp_cart[index].quantity += 1;
-    setCart(temp_cart);
+  // **TEMPORARY**
+  const manualAddProduct = () => {
+    let current_barcode = products[temporaryCartPointer].barcode;
+    console.log(current_barcode);
+    addToCart(current_barcode);
+    setTemporaryCartPointer(prevState => prevState+1);
   }
 
-  const reduceQuantity = (id) => {
-    let index = cart.findIndex(el => el['id'] === id);
-    let temp_cart = [...cart];
-    if (temp_cart[index].quantity > 1) {
-      temp_cart[index].quantity -= 1;
-    } else {
-      temp_cart.splice(index, 1);
-    }
-    setCart(temp_cart);
-  }
-
-  let productPreview = productPreviewIndex >= 0 ? (
+  let productPreview = currentProduct !== 0 ? (
       <>
         <div className={styles['product-title-container']}>
-          <img src={products[productPreviewIndex].image} alt="product added preview"/>
-          <h3>{products[productPreviewIndex].name}</h3>
+          <img src={currentProduct.image} alt="product added preview"/>
+          <h3>{currentProduct.name}</h3>
         </div>
         <br/>
-        <p>Net Weight: <b>{products[productPreviewIndex].net_weight}</b></p>
-        <p>Price: <b>{products[productPreviewIndex].price}</b></p>
+        <p>Net Weight: <b>{currentProduct.net_weight}</b></p>
+        <p>Price: <b>{currentProduct.price}</b></p>
       </>
    ) : 'No Product Found Yet.';
 
    let cartItems = (
-      cart.map((item) => {
-        const product = products[item.index];
+      mainCart.map((item) => {
         return (
           <ProductItemCounter
             key={item.id}
             id={item.id}
-            imgUrl={product.image}
-            name={product.name}
-            net={product.net_weight}
-            flavor={product.flavor}
-            price={product.price}
+            imgUrl={item.image}
+            name={item.name}
+            net={item.net_weight}
+            flavor={item.flavor}
+            price={item.price}
             quantity={item.quantity}
-            increment={addQuantity}
-            decrement={reduceQuantity}
+            increment={addQuantityHandler}
+            decrement={reduceQuantityHandler}
           />
         );
       })
@@ -166,7 +155,10 @@ const PosCartView = () => {
   return (
     <Layout title="POS">
       <div className={styles['barcode-view']} onClick={toggleBarcodeScan}>
-        <div className={styles['search-icon']} onClick={navigateSearchProduct}>
+        <div className={styles['search-icon']}
+          // onClick={navigateSearchProduct}
+          onClick={manualAddProduct}
+          >
           <img src='/icons/search.png' alt="search"/>
         </div>
         <div className="scanner-container">
@@ -186,7 +178,7 @@ const PosCartView = () => {
           <b>TOTAL</b>
         </p>
         <div className={styles["clear-button"]}>
-          <SmallButton label="clear" onClick={clearCart} />
+          <SmallButton label="clear" onClick={clearCartHandler} />
         </div>
         <p className={`label ${styles["total-price"]}`}>
           <b>Php {formatPrice(cartTotal)}</b>
