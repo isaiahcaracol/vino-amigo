@@ -9,8 +9,9 @@ import Layout from "../components/UI/Layout/Layout";
 
 const ViewProduct = (props) => {
   const { products, hasLoaded } = useSelector(state => state.products);
-  // const cartItems = useSelector(state => state.cart.addToCart);
   const [productData, setProductData] = useState(null);
+  const cart = useSelector(state => state.cart.items);
+  const [quantityinCart, setQuantityinCart] = useState(0);
   const params = useParams();
   const dispatch = useDispatch();
 
@@ -23,8 +24,24 @@ const ViewProduct = (props) => {
     }
   }, [dispatch, hasLoaded, products, params.productId]);
 
+
+  useEffect(() => {
+    if (productData !== null) {
+      const inCart = cart.find(el => el.id === productData.id);
+      if (inCart !== undefined) {
+        console.log(inCart);
+        setQuantityinCart(inCart.quantity);
+      }
+    }
+  }, [cart, productData]);
+
   const addToCart = () => {
-    dispatch(updateCart(0));
+    if (quantityinCart === 0) {
+      dispatch(updateCart({
+        ...productData,
+        quantity: 1,
+      }))
+    }
   }
 
   let productEl = productData !== null
@@ -41,6 +58,7 @@ const ViewProduct = (props) => {
           <p><b>Alcohol Content: </b> {productData.alcohol_content}</p>
           <p><b>Current Stock: </b> {productData.current_stock}</p>
           <p><b>Category: </b> {productData.category}</p>
+          <p>In Cart: {quantityinCart}</p>
         </div>
     ) : (<h2>No Product Found</h2>);
 
@@ -48,7 +66,7 @@ const ViewProduct = (props) => {
     <Layout title="View Product" isViewOnly>
       {productEl}
       <br/>
-      {props.cartMode && 
+      {(props.cartMode && quantityinCart === 0) && 
         <button type="submit" className={`primary ${styles["btn-proceed"]}`} onClick={addToCart}>
           ADD TO CART
         </button>}
