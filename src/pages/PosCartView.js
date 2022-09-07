@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducts } from '../store/ProductSlice';
+import axios from 'axios';
 import { updateCart, 
         increaseQuantity,
         reduceQuantity,
@@ -111,6 +112,32 @@ const PosCartView = () => {
     }, 3000);
   }
 
+  const saveCartHandler = () => {
+    let values = {
+      total: cartTotalPrice,
+      sold_products: cart.map(item => {
+        return {
+          product: item.id,
+          quantity: item.quantity,
+        }
+      }),
+    }
+    
+    console.log(values);
+
+    let token = localStorage.getItem('vinoAmigoAuthToken');
+    axios.post('http://127.0.0.1:8000/api/transactions/', values, {
+      headers: {
+        'Authorization': `Token ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      console.log('success save');
+    }).catch(error => {
+      console.log(error.response.data);
+    });
+  }
+
   // **TEMPORARY**
   const manualAddProduct = () => {
     let current_barcode = products[temporaryCartPointer].barcode;
@@ -183,7 +210,7 @@ const PosCartView = () => {
         <button type="submit" className={`primary ${styles["btn-proceed"]}`} onClick={manualAddProduct}>
           MANUAL ADD
         </button>
-        <button type="submit" className={`primary ${styles["btn-proceed"]}`}>
+        <button type="submit" className={`primary ${styles["btn-proceed"]}`} onClick={saveCartHandler}>
           PROCEED
         </button>
       </div>

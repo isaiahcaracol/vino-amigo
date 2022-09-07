@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Pos from './pages/Pos';
 import PosCartView from "./pages/PosCartView";
+import PosCheckout from "./pages/PosCheckout";
 import Users from './pages/Users';
 import ProductsList from "./components/Products/ProductsList";
 import AddNewProduct from "./components/Products/AddNewProduct";
@@ -40,6 +41,7 @@ function App() {
       <Route path="pos" element={<Pos/>}>
         <Route index element={<PosCartView/>} />
         <Route path="product-search" element={<SearchProduct/>} />
+        <Route path="checkout" element={<PosCheckout/>} />
         {/* <Route path="add-barcode" element={<PosBarCode/>} />
         <Route path="add-search" element={<h1>Scanning</h1>} /> */}
       </Route>
